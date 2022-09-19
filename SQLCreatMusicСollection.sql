@@ -1,0 +1,88 @@
+CREATE DATABASE MusicCollection;
+GO
+
+CREATE TABLE Countries (
+	ID	 	        INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_COUNTRIES	NVARCHAR(50) CHECK(NAME_COUNTRIES <>'') UNIQUE NOT NULL
+)
+GO
+
+CREATE TABLE Authors (
+	ID	 	        INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_AUTHORS	NVARCHAR(MAX) CHECK(NAME_AUTHORS	<>'') NOT NULL,
+	COUNTRYID       INT NOT NULL REFERENCES Countries (Id)
+)
+GO
+
+CREATE TABLE Style (
+	ID	 	    INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_STYLE	NVARCHAR(100) CHECK(NAME_STYLE <>'') UNIQUE NOT NULL
+)
+GO
+
+CREATE TABLE Publisher (
+	ID	 		    INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_PUBLISHER	NVARCHAR(MAX) CHECK(NAME_PUBLISHER <>'') NOT NULL,
+	COUNTRYID		INT NOT NULL REFERENCES Countries (Id)
+)
+GO
+
+CREATE TABLE DiskName (
+	ID	 	    INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_DISK	NVARCHAR(MAX) CHECK(NAME_DISK <>'') NOT NULL,
+	PUBLISHDATE DATE CHECK(PUBLISHDATE < GETDATE()) NOT NULL,
+	STYLEID		INT NOT NULL REFERENCES Style (Id),
+	PUBLISHERID INT NOT NULL REFERENCES Publisher (Id)
+)
+GO
+
+CREATE TABLE Song (
+	ID	 	    INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	NAME_SONG	NVARCHAR(MAX) CHECK(NAME_SONG <>'') NOT NULL,
+	DURATION	TIME CHECK(DURATION <>'') NOT NULL,
+	AUTHORID    INT NOT NULL REFERENCES Authors (Id),
+	STYLEID		INT NOT NULL REFERENCES Style (Id)
+)
+GO
+
+INSERT INTO Countries (NAME_COUNTRIES) VALUES
+('Украина'),
+('Россия'),
+('США'),
+('Германия'),
+('Узбекистан');
+
+INSERT INTO Authors ( NAME_AUTHORS, CountryId) VALUES
+('Алиса',1),
+('Крематорий',3),
+('Сектор Газа',2),
+('Машина времени',4),
+('Скорпионс',5);
+
+INSERT INTO Style (NAME_STYLE) VALUES
+('Рок'),
+('Класическая музыка'),
+('Реп'),
+('Частушки'),
+('Поп музыка');
+
+INSERT INTO Publisher ( NAME_PUBLISHER, CountryId) VALUES
+('CDPrint',1),
+('copyCD',3),
+('Арена',2),
+('Издательский ДОМ',4),
+('PUBLISHER_CD',5);
+
+INSERT INTO DiskName ( NAME_DISK, PUBLISHDATE, STYLEID, PUBLISHERID) VALUES
+('Монстро','2004-05-05',3,5),
+('Аэропорт','2001-03-02',4,3),
+('Карты хаоса','2002-01-12',5,2),
+('Арера', '2004-07-19',2,4),
+('Неукротимая планета', '2003-11-11',1,1);
+
+INSERT INTO Song ( NAME_SONG, DURATION, STYLEID, AUTHORID) VALUES
+('Белый день','23:59:59.0',3,5),
+('Андрей бандера','23:59:59.0',4,3),
+('Мой голубчик','23:59:59.0',5,2),
+('Калинка', '23:59:59.0',2,4),
+('Вечерний звон', '23:59:59.0',1,1);
